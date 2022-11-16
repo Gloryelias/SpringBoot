@@ -7,6 +7,7 @@ import com.student.ust.exception.InvalidPasswordException;
 import com.student.ust.repository.StudentRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -82,6 +83,13 @@ public class StudentSevice
     public StudentDTO converttoDTO(Student student) {
         return  modelMapper.map(student,StudentDTO.class);
 
+
+    }
+    public  List<StudentDTO>  converttoDTO2(list<Student> studentAll){
+        Object StudentDTO;
+        short List;
+        List<StudentDTO>  studentDTOList=modelMapper.map(studentAll,new TypeToken<List<StudentDTO>>(){}.getType());
+        return  studentDTOList;
     }
 }
 

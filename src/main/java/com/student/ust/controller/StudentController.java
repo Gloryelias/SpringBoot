@@ -4,7 +4,9 @@ import com.student.ust.DTO.StudentDTO;
 import com.student.ust.exception.BusinessException;
 import com.student.ust.exception.InvalidEmailException;
 import com.student.ust.entity.Student;
+import com.student.ust.exception.InvalidPasswordException;
 import com.student.ust.service.StudentSevice;
+import com.student.ust.service.list;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -37,10 +39,11 @@ public class StudentController
     @GetMapping("/student/{id}")
    public  ResponseEntity<StudentDTO>get(@PathVariable Integer id)
     {
+        log.debug("student return of id >>>>>>>>>> "+ id);
         try
         {
             Student student = studentSevice.getStudentByID(id);
-            log.debug("student return of id >>>>>>>>>> "+ id + "  Name is >>>>>>" +student.getName());
+            //log.debug("student return of id >>>>>>>>>> "+ id + "  Name is >>>>>>" +student.getName());
             return new ResponseEntity<StudentDTO>(studentSevice.converttoDTO(student),HttpStatus.OK);
         }
         catch (NoSuchElementException e)
@@ -60,11 +63,20 @@ public class StudentController
             {
                 try{
                     studentSevice.saveStudent((student));
-                    return new ResponseEntity<Student>(HttpStatus.OK);
-                }catch(BusinessException e){
+                    log.debug("student return of id >>>>>>>>>> "+ student.getName()+ "  " +student.getAge() + " " + student.getRollno() );
+                    return new ResponseEntity<Student>(student,HttpStatus.OK);
+                }catch(InvalidEmailException e){
                     return  new ResponseEntity<Student>(HttpStatus.PRECONDITION_FAILED);
                 }
+                catch (InvalidPasswordException  e)
+                {
+                    return  new ResponseEntity<Student>(HttpStatus.PRECONDITION_FAILED);
+                }
+                catch (NoSuchElementException e)
 
+                {
+                    return  new ResponseEntity<Student>(HttpStatus.PRECONDITION_FAILED);
+                }
             }
 
     /**
@@ -72,13 +84,14 @@ public class StudentController
      *
      * @return the response entity
      */
-    /**
+
     @GetMapping("/student")
-                    public ResponseEntity<List<StudentDTO>> get() {
-                 log.debug("Glo");
+    public ResponseEntity<List<StudentDTO>> getall() {
+                 //log.debug("Glo");
                 try {
-                    List<StudentDTO> studentList = studentSevice.getAllStudent();
-                    return new ResponseEntity<List<StudentDTO>>(studentList, HttpStatus.OK);
+                    List<Student> studentList = studentSevice.getAllStudent();
+                    list<Student> studentAll = new list<>();
+                    return new ResponseEntity<List<StudentDTO>>(studentSevice.converttoDTO2(studentAll), HttpStatus.OK);
                 } catch (NoSuchElementException e) {
                     return new ResponseEntity<List<StudentDTO>>(HttpStatus.NOT_FOUND);
 
